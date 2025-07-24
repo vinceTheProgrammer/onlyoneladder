@@ -1,0 +1,57 @@
+[gd_scene load_steps=5 format=3 uid="uid://du2pye3f8kkj2"]
+
+[ext_resource type="PackedScene" uid="uid://g5xryfrkrgvy" path="res://scenes/player.tscn" id="1_e2o6t"]
+[ext_resource type="PackedScene" uid="uid://sxaprexj827t" path="res://levels/level_1.tscn" id="2_fc0e3"]
+[ext_resource type="PackedScene" uid="uid://duohx147y3mx3" path="res://scenes/ladder.tscn" id="2_feb5d"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_feb5d"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Players" type="Node" parent="."]
+
+[node name="Player" parent="Players" instance=ExtResource("1_e2o6t")]
+z_index = 15
+position = Vector2(-247, -134)
+
+[node name="PinJoint2D" type="PinJoint2D" parent="Players/Player"]
+node_a = NodePath("..")
+node_b = NodePath("../../../Ladder")
+
+[node name="Player2" parent="Players" instance=ExtResource("1_e2o6t")]
+position = Vector2(-212, -25)
+player_id = 2
+player_color = Color(0.396745, 0.500633, 1, 1)
+
+[node name="Level1" parent="." instance=ExtResource("2_fc0e3")]
+
+[node name="Ladder" parent="." instance=ExtResource("2_feb5d")]
+position = Vector2(-248, -72)
+
+[node name="RigidBody2D" type="RigidBody2D" parent="."]
+position = Vector2(-285, 15)
+collision_mask = 5
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="RigidBody2D"]
+shape = SubResource("RectangleShape2D_feb5d")
+
+[node name="ColorRect" type="ColorRect" parent="RigidBody2D"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -10.0
+offset_top = -10.0
+offset_right = 30.0
+offset_bottom = 30.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.5, 0.5)
+
+[connection signal="ladder_area_entered" from="Ladder" to="Players/Player" method="_on_ladder_ladder_area_entered"]
+[connection signal="ladder_area_entered" from="Ladder" to="Players/Player2" method="_on_ladder_ladder_area_entered"]
+[connection signal="ladder_area_exited" from="Ladder" to="Players/Player" method="_on_ladder_ladder_area_exited"]
+[connection signal="ladder_area_exited" from="Ladder" to="Players/Player2" method="_on_ladder_ladder_area_exited"]
