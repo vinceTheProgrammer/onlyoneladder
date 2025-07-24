@@ -187,11 +187,10 @@ jobs:
           name: mac
           path: dist/mac
 
-      - name: Zip all builds (optional)
+      - name: Zip Web Build
         run: |
-          cd dist
-          zip -r all-platforms.zip .
-          cd ..
+          cd dist/web
+          zip -r ../web.zip .
 
       - name: Determine release context
         id: releaseinfo
@@ -216,10 +215,11 @@ jobs:
           name: ${{ steps.releaseinfo.outputs.name }}
           body_path: release_notes.md
           prerelease: ${{ steps.releaseinfo.outputs.prerelease }}
+          overwrite_files: true
           files: |
             dist/windows/*
             dist/linux/*
             dist/mac/*
-            dist/web/*
+            dist/web.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
