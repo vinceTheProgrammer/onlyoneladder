@@ -12,7 +12,6 @@ var players_currently_climbing: Array[Player] = []
 func _physics_process(delta: float) -> void:
 	update_center_of_mass()
 	queue_redraw()
-	print(players_currently_climbing)
 	
 func update_center_of_mass() -> void:
 	var total_weight := 0.0

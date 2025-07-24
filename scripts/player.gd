@@ -40,7 +40,20 @@ var target_ladder: Ladder
 var ladder_offset := 20.0
 var ladder_velocity := 0.0
 
+func _ready() -> void:
+	set_spawn_point()
+	
+# TODO: let the level loader do this
+func set_spawn_point() -> void:
+	var spawn_points = get_tree().get_nodes_in_group("spawn_point")
+	
+	var target_spawn_point = spawn_points.filter(func(s): return s.player_id == player_id).front()
+	if target_spawn_point:
+		spawn_point = target_spawn_point
+		global_position = spawn_point.global_position
+
 func _physics_process(delta: float) -> void:
+	handle_death()
 	handle_animation(delta)
 	if dying:
 		return
@@ -56,7 +69,6 @@ func handle_collisions() -> void:
 	if last_collision:
 		var collider := last_collision.get_collider()
 		if collider is TileMapLayer:
-			var tilemap: TileMapLayer = collider
 			var tile_pos: Vector2i = last_collision.get_collider().get_coords_for_body_rid(last_collision.get_collider_rid())
 			var tile_data = last_collision.get_collider().get_cell_tile_data(tile_pos)
 			if tile_data:
@@ -65,13 +77,15 @@ func handle_collisions() -> void:
 					die()
 					
 func die() -> void:
+	dying = true
+	
+func handle_death() -> void:
+	print(die_animation_time_remaining)
 	if die_animation_time_remaining <= 0:
 		dying = false
 		if spawn_point:
-			position = spawn_point.position
-	else:
-		dying = true
-	
+			print("hi")
+			global_position = spawn_point.global_position
 	
 func handle_animation(delta: float) -> void:
 	var direction: float = Input.get_axis(move_left_action, move_right_action)
