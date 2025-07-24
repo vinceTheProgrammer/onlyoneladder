@@ -1,5 +1,10 @@
 name: "godot-ci export"
-on: push
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
 
 # NOTE: If your `project.godot` is at the repository root, set `PROJECT_PATH` below to ".".
 
@@ -155,7 +160,7 @@ jobs:
     needs: [export-windows, export-linux, export-web, export-mac]
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Needed to create a release
+      contents: write
 
     steps:
       - name: Download Windows build
@@ -188,17 +193,29 @@ jobs:
           zip -r all-platforms.zip .
           cd ..
 
-      - name: Generate changelog from commits
-        id: changelog
+      - name: Determine release context
+        id: releaseinfo
         run: |
-          git log --pretty=format:"- %s (%an)" $(git describe --tags --abbrev=0)..HEAD > release_notes.md
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+            echo "tag=$TAG" >> $GITHUB_OUTPUT
+            echo "name=Release $TAG" >> $GITHUB_OUTPUT
+            echo "prerelease=false" >> $GITHUB_OUTPUT
+            git log --pretty=format:"- %s (%an)" $(git describe --tags --abbrev=0)..HEAD > release_notes.md
+          else
+            echo "tag=dev" >> $GITHUB_OUTPUT
+            echo "name=Development Build" >> $GITHUB_OUTPUT
+            echo "prerelease=true" >> $GITHUB_OUTPUT
+            echo "Latest development build from main." > release_notes.md
+          fi
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: "Release ${{ github.ref_name }}"
-          tag_name: ${{ github.ref_name }}
+          tag_name: ${{ steps.releaseinfo.outputs.tag }}
+          name: ${{ steps.releaseinfo.outputs.name }}
           body_path: release_notes.md
+          prerelease: ${{ steps.releaseinfo.outputs.prerelease }}
           files: |
             dist/windows/*
             dist/linux/*
