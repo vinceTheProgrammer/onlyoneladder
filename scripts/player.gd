@@ -9,7 +9,7 @@ const JUMP_SPEED = -300.0
 const MOVE_SPEED = 200.0
 const LADDER_MOVE_SPEED = 100.0
 const MASS = 5.0
-const GRAB_ACTION_HOLD_TIME = 0.5
+const GRAB_ACTION_HOLD_THRESHOLD = 0.5
 
 @onready var move_left_action := "move_left_player%d" % player_id
 @onready var move_right_action := "move_right_player%d" % player_id
@@ -46,10 +46,8 @@ var ladder_velocity := 0.0
 var grab_joint: PinJoint2D = null
 var grabbed_body: RigidBody2D = null
 
-var grab_next_tick: bool = false
-var climb_next_tick: bool = false
-
-var grab_time_remaining := GRAB_ACTION_HOLD_TIME
+var grab_hold_timer := 0.0
+var grab_input_held: bool = false
 
 func _ready() -> void:
 	set_spawn_point()
@@ -69,25 +67,38 @@ func _physics_process(delta: float) -> void:
 	handle_animation(delta)
 	if dying:
 		return
-	handle_ladder_interact()
 	if current_ladder:
 		apply_ladder_movement(delta)
 	else:
-		handle_grabbing()
 		apply_default_movement(delta)
 		handle_collisions()
 		
 func handle_grab_climb_input(delta: float) -> void:
-	if Input.is_action_pressed(grab_action):
-		grab_time_remaining -= delta
-	else:
-		grab_time_remaining = GRAB_ACTION_HOLD_TIME
-	
-	if grab_time_remaining <= 0.0:
-			grab_next_tick = true
-	else:
-		if Input.is_action_just_released(grab_action):
-			climb_next_tick = true
+	if Input.is_action_just_pressed(grab_action):
+		grab_hold_timer = 0.0
+		grab_input_held = true
+	elif Input.is_action_pressed(grab_action) and grab_input_held:
+		grab_hold_timer += delta
+		if not grabbed_body and grab_hold_timer >= GRAB_ACTION_HOLD_THRESHOLD:
+			var closest_body = find_closest_body_in_area()
+			if closest_body:
+				current_ladder = null
+				try_grab(closest_body, global_position)
+	elif Input.is_action_just_released(grab_action) and grab_input_held:
+		grab_input_held = false
+		if grabbed_body:
+			release_grab()
+		elif grab_hold_timer < GRAB_ACTION_HOLD_THRESHOLD:
+			if current_ladder:
+				current_ladder.players_currently_climbing.erase(self)
+				current_ladder = null
+			elif target_ladder:
+				release_grab()
+				current_ladder = target_ladder
+				var local_pos_on_ladder := current_ladder.to_local(global_position)
+				ladder_offset = clampf(local_pos_on_ladder.y, current_ladder.END_Y_OFFSET, current_ladder.START_Y_OFFSET)
+				if not current_ladder.players_currently_climbing.has(self):
+					current_ladder.players_currently_climbing.append(self)
 		
 func handle_collisions() -> void:
 	var last_collision := get_last_slide_collision()
@@ -182,19 +193,6 @@ func handle_jump() -> void:
 		velocity.y = JUMP_SPEED
 	if jump_animation_time_remaining <= 0:
 		jumping = false
-		
-func handle_ladder_interact():
-	if climb_next_tick:
-		climb_next_tick = false
-		if current_ladder:
-			current_ladder.players_currently_climbing.erase(self)
-			current_ladder = null
-		elif target_ladder:
-			current_ladder = target_ladder
-			var local_pos_on_ladder := current_ladder.to_local(global_position)
-			ladder_offset = clampf(local_pos_on_ladder.y, current_ladder.END_Y_OFFSET, current_ladder.START_Y_OFFSET)
-			if not current_ladder.players_currently_climbing.has(self):
-				current_ladder.players_currently_climbing.append(self)
 
 func _on_ladder_ladder_area_entered(ladder: Ladder, body: Node2D) -> void:
 	if body == self:
@@ -203,18 +201,6 @@ func _on_ladder_ladder_area_entered(ladder: Ladder, body: Node2D) -> void:
 func _on_ladder_ladder_area_exited(ladder: Ladder, body: Node2D) -> void:
 	if body == self and target_ladder == ladder:
 		target_ladder = null
-		
-func handle_grabbing() -> void:
-	if grab_next_tick:
-		grab_next_tick = false
-		grab_time_remaining = GRAB_ACTION_HOLD_TIME
-		if not grabbed_body:
-			var closest_body = find_closest_body_in_area()
-			if closest_body:
-				try_grab(closest_body, global_position)
-		else:
-			release_grab()
-		
 		
 func find_closest_body_in_area() -> RigidBody2D:
 	var closest: RigidBody2D = null
