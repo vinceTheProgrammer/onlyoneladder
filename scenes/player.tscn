@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://g5xryfrkrgvy"]
+[gd_scene load_steps=37 format=3 uid="uid://g5xryfrkrgvy"]
 
 [ext_resource type="Script" uid="uid://chsgljjyqjm88" path="res://scripts/player.gd" id="1_p0vlq"]
 [ext_resource type="Texture2D" uid="uid://dxi6jgg3l0dm6" path="res://assets/16x16 2D Platformer - Programmer Art/Animations/Player/Player - Climb.png" id="2_70d11"]
@@ -227,6 +227,8 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_tuyoq"]
+
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 collision_layer = 2
 collision_mask = 3
@@ -240,3 +242,10 @@ shape = SubResource("RectangleShape2D_v6fml")
 sprite_frames = SubResource("SpriteFrames_fq1a3")
 animation = &"idle"
 frame_progress = 0.993312
+
+[node name="GrabArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 12
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GrabArea"]
+shape = SubResource("CircleShape2D_tuyoq")

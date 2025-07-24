@@ -103,7 +103,7 @@ move_down_player2={
 2d_physics/layer_1="Environment"
 2d_physics/layer_2="Player"
 2d_physics/layer_3="Ladder"
-2d_physics/layer_4="OnLadder"
+2d_physics/layer_4="Objects"
 
 [rendering]
 

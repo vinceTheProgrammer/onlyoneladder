@@ -18,6 +18,8 @@ const MASS = 5.0
 @onready var jump_action := "jump_player%d" % player_id
 @onready var climb_ladder_action := "interact_player%d" % player_id
 
+@onready var grab_action := "grab_player%d" % player_id
+
 @onready var sprite = $AnimatedSprite2D
 
 var spawn_point: SpawnPoint
@@ -40,6 +42,9 @@ var target_ladder: Ladder
 var ladder_offset := 20.0
 var ladder_velocity := 0.0
 
+var grab_joint: PinJoint2D = null
+var grabbed_body: RigidBody2D = null
+
 func _ready() -> void:
 	set_spawn_point()
 	
@@ -61,6 +66,7 @@ func _physics_process(delta: float) -> void:
 	if current_ladder:
 		apply_ladder_movement(delta)
 	else:
+		handle_grabbing()
 		apply_default_movement(delta)
 		handle_collisions()
 		
@@ -177,3 +183,50 @@ func _on_ladder_ladder_area_entered(ladder: Ladder, body: Node2D) -> void:
 func _on_ladder_ladder_area_exited(ladder: Ladder, body: Node2D) -> void:
 	if body == self and target_ladder == ladder:
 		target_ladder = null
+		
+func handle_grabbing() -> void:
+	if Input.is_action_just_pressed(grab_action):
+		if not grabbed_body:
+			var closest_body = find_closest_body_in_area()
+			if closest_body:
+				try_grab(closest_body, global_position)
+		else:
+			release_grab()
+		
+		
+func find_closest_body_in_area() -> RigidBody2D:
+	var closest: RigidBody2D = null
+	var shortest_distance = INF
+	var bodies = $GrabArea.get_overlapping_bodies()
+	for body in bodies:
+		if body is RigidBody2D:
+			if not body.is_in_group("grabbable"):
+				continue
+			var dist = global_position.distance_to(body.global_position)
+			if dist < shortest_distance:
+				shortest_distance = dist
+				closest = body
+	return closest
+	
+func try_grab(body: RigidBody2D, grab_pos: Vector2):
+	if grab_joint: return
+	grab_joint = PinJoint2D.new()
+	grab_joint.node_a = self.get_path()
+	grab_joint.node_b = body.get_path()
+	grab_joint.position = Vector2.ZERO
+	add_child(grab_joint)
+	var color_rect = ColorRect.new()
+	color_rect.color = Color.RED
+	color_rect.size.x = 4
+	color_rect.size.y = 4
+	color_rect.position.x -= 2
+	color_rect.position.y -= 2
+	grab_joint.add_child(color_rect)
+	color_rect.position = Vector2.ZERO
+	grabbed_body = body
+
+func release_grab():
+	if grab_joint:
+		grab_joint.queue_free()
+		grab_joint = null
+		grabbed_body = null
