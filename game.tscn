@@ -16,10 +16,6 @@
 z_index = 15
 position = Vector2(-247, -134)
 
-[node name="PinJoint2D" type="PinJoint2D" parent="Players/Player"]
-node_a = NodePath("..")
-node_b = NodePath("../../../Ladder")
-
 [node name="Player2" parent="Players" instance=ExtResource("1_e2o6t")]
 position = Vector2(-212, -25)
 player_id = 2
@@ -29,6 +25,7 @@ player_color = Color(0.396745, 0.500633, 1, 1)
 
 [node name="Ladder" parent="." instance=ExtResource("2_feb5d")]
 position = Vector2(-248, -72)
+rotation = 0.129398
 
 [node name="RigidBody2D" type="RigidBody2D" parent="."]
 position = Vector2(-285, 15)
