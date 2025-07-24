@@ -149,3 +149,60 @@ jobs:
         with:
           name: mac
           path: build/mac
+
+  release:
+    name: Publish GitHub Release
+    needs: [export-windows, export-linux, export-web, export-mac]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Needed to create a release
+
+    steps:
+      - name: Download Windows build
+        uses: actions/download-artifact@v4
+        with:
+          name: windows
+          path: dist/windows
+
+      - name: Download Linux build
+        uses: actions/download-artifact@v4
+        with:
+          name: linux
+          path: dist/linux
+
+      - name: Download Web build
+        uses: actions/download-artifact@v4
+        with:
+          name: web
+          path: dist/web
+
+      - name: Download macOS build
+        uses: actions/download-artifact@v4
+        with:
+          name: mac
+          path: dist/mac
+
+      - name: Zip all builds (optional)
+        run: |
+          cd dist
+          zip -r all-platforms.zip .
+          cd ..
+
+      - name: Generate changelog from commits
+        id: changelog
+        run: |
+          git log --pretty=format:"- %s (%an)" $(git describe --tags --abbrev=0)..HEAD > release_notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Release ${{ github.ref_name }}"
+          tag_name: ${{ github.ref_name }}
+          body_path: release_notes.md
+          files: |
+            dist/windows/*
+            dist/linux/*
+            dist/mac/*
+            dist/web/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
