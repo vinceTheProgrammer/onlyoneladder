@@ -80,11 +80,9 @@ func die() -> void:
 	dying = true
 	
 func handle_death() -> void:
-	print(die_animation_time_remaining)
 	if die_animation_time_remaining <= 0:
 		dying = false
 		if spawn_point:
-			print("hi")
 			global_position = spawn_point.global_position
 	
 func handle_animation(delta: float) -> void:
