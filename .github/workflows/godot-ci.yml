@@ -111,6 +111,33 @@ jobs:
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+      - name: Enable ETC2 ASTC for macOS only
+        run: |
+          FILE="$PROJECT_PATH/project.godot"
+          # Ensure [rendering] section exists
+          if ! grep -q "^\[rendering\]" "$FILE"; then
+            echo -e "\n[rendering]" >> "$FILE"
+          fi
+
+          # Remove any existing setting for the ETC2 ASTC line
+          sed -i '/^textures\/vram_compression\/import_etc2_astc/d' "$FILE"
+
+          # Insert the setting right after the [rendering] section
+          awk '
+            BEGIN { inserted=0 }
+            /^\[rendering\]/ {
+              print
+              getline nextLine
+              print nextLine
+              print "textures/vram_compression/import_etc2_astc=true"
+              inserted=1
+              next
+            }
+            { print }
+            END {
+              if (!inserted) print "textures/vram_compression/import_etc2_astc=true"
+            }
+          ' "$FILE" > temp && mv temp "$FILE"
       - name: Mac Build
         run: |
           mkdir -v -p build/mac
