@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=4 uid="uid://sxaprexj827t"]
+[gd_scene load_steps=8 format=4 uid="uid://sxaprexj827t"]
 
 [ext_resource type="Texture2D" uid="uid://cvg0ypp6wdsu8" path="res://assets/16x16 2D Platformer - Programmer Art/Tileset/16x16Tileset-resize.png" id="1_bt44k"]
 [ext_resource type="Texture2D" uid="uid://cdxxt2k32sqb" path="res://assets/16x16 2D Platformer - Programmer Art/Animations/Sawblades/Big Sawblades/Big Sawblades.png" id="2_kx6l7"]
@@ -962,6 +962,8 @@ custom_data_layer_0/type = 1
 sources/0 = SubResource("TileSetAtlasSource_feb5d")
 sources/3 = SubResource("TileSetAtlasSource_7jktm")
 
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_bt44k"]
+
 [node name="Level1" type="Node"]
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
@@ -974,3 +976,34 @@ position = Vector2(-215, 0)
 [node name="SpawnPoint2" parent="." instance=ExtResource("3_n46q3")]
 position = Vector2(-122, 3)
 player_id = 2
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2(-323, 0)
+rotation = 1.57079
+collision_mask = 14
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("WorldBoundaryShape2D_bt44k")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="."]
+position = Vector2(321, 0)
+rotation = -1.57079
+collision_mask = 14
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2"]
+shape = SubResource("WorldBoundaryShape2D_bt44k")
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="."]
+position = Vector2(0, -183)
+rotation = -3.14159
+collision_mask = 14
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D3"]
+shape = SubResource("WorldBoundaryShape2D_bt44k")
+
+[node name="StaticBody2D4" type="StaticBody2D" parent="."]
+position = Vector2(0, 184)
+collision_mask = 14
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D4"]
+shape = SubResource("WorldBoundaryShape2D_bt44k")

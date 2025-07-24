@@ -9,6 +9,7 @@ const JUMP_SPEED = -300.0
 const MOVE_SPEED = 200.0
 const LADDER_MOVE_SPEED = 100.0
 const MASS = 5.0
+const GRAB_ACTION_HOLD_TIME = 0.5
 
 @onready var move_left_action := "move_left_player%d" % player_id
 @onready var move_right_action := "move_right_player%d" % player_id
@@ -45,6 +46,11 @@ var ladder_velocity := 0.0
 var grab_joint: PinJoint2D = null
 var grabbed_body: RigidBody2D = null
 
+var grab_next_tick: bool = false
+var climb_next_tick: bool = false
+
+var grab_time_remaining := GRAB_ACTION_HOLD_TIME
+
 func _ready() -> void:
 	set_spawn_point()
 	
@@ -58,6 +64,7 @@ func set_spawn_point() -> void:
 		global_position = spawn_point.global_position
 
 func _physics_process(delta: float) -> void:
+	handle_grab_climb_input(delta)
 	handle_death()
 	handle_animation(delta)
 	if dying:
@@ -69,6 +76,18 @@ func _physics_process(delta: float) -> void:
 		handle_grabbing()
 		apply_default_movement(delta)
 		handle_collisions()
+		
+func handle_grab_climb_input(delta: float) -> void:
+	if Input.is_action_pressed(grab_action):
+		grab_time_remaining -= delta
+	else:
+		grab_time_remaining = GRAB_ACTION_HOLD_TIME
+	
+	if grab_time_remaining <= 0.0:
+			grab_next_tick = true
+	else:
+		if Input.is_action_just_released(grab_action):
+			climb_next_tick = true
 		
 func handle_collisions() -> void:
 	var last_collision := get_last_slide_collision()
@@ -165,7 +184,8 @@ func handle_jump() -> void:
 		jumping = false
 		
 func handle_ladder_interact():
-	if Input.is_action_just_pressed(climb_ladder_action):
+	if climb_next_tick:
+		climb_next_tick = false
 		if current_ladder:
 			current_ladder.players_currently_climbing.erase(self)
 			current_ladder = null
@@ -185,7 +205,9 @@ func _on_ladder_ladder_area_exited(ladder: Ladder, body: Node2D) -> void:
 		target_ladder = null
 		
 func handle_grabbing() -> void:
-	if Input.is_action_just_pressed(grab_action):
+	if grab_next_tick:
+		grab_next_tick = false
+		grab_time_remaining = GRAB_ACTION_HOLD_TIME
 		if not grabbed_body:
 			var closest_body = find_closest_body_in_area()
 			if closest_body:
