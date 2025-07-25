@@ -3,6 +3,13 @@ class_name Player
 
 @export var player_id: int = 1
 @export var player_color: Color = Color.RED;
+@onready var move_left_action := "move_left_player%d" % player_id
+@onready var move_right_action := "move_right_player%d" % player_id
+@onready var move_down_action := "move_down_player%d" % player_id
+@onready var move_up_action := "move_up_player%d" % player_id
+@onready var jump_action := "jump_player%d" % player_id
+@onready var ability_action := "grab_player%d" % player_id
+@onready var sprite = $AnimatedSprite2D
 
 const GRAVITY = 980.0 # pixels/sec^2
 const JUMP_SPEED = -300.0
@@ -10,42 +17,29 @@ const MOVE_SPEED = 200.0
 const LADDER_MOVE_SPEED = 100.0
 const MASS = 5.0
 const GRAB_HOLD_THRESHOLD = 0.5
-
-@onready var move_left_action := "move_left_player%d" % player_id
-@onready var move_right_action := "move_right_player%d" % player_id
-@onready var move_down_action := "move_down_player%d" % player_id
-@onready var move_up_action := "move_up_player%d" % player_id
-
-@onready var jump_action := "jump_player%d" % player_id
-@onready var ability_action := "grab_player%d" % player_id
-
-@onready var sprite = $AnimatedSprite2D
-
-var spawn_point: SpawnPoint
-
-var dying: bool = false
-var jumping: bool = false
-
+const JUMP_BUFFER_TIME := 0.15
 const COYOTE_TIME_LENGTH = 0.2
-var remaining_coyote_time: float = COYOTE_TIME_LENGTH
-var can_jump: bool = true
-
+const LADDER_COYOTE_TIME_LENGTH = 0.3
 const DIE_ANIMATION_LENGTH = 1.0
 const JUMP_ANIMATION_LENGTH = 1.0
+
+var spawn_point: SpawnPoint
+var dying: bool = false
+var jumping: bool = false
+var remaining_coyote_time: float = COYOTE_TIME_LENGTH
 var die_animation_time_remaining: float = DIE_ANIMATION_LENGTH
 var jump_animation_time_remaining: float = JUMP_ANIMATION_LENGTH
-
 var current_ladder: Ladder
 var target_ladder: Ladder
-
 var ladder_offset := 20.0
 var ladder_velocity := 0.0
-
 var grab_joint: PinJoint2D = null
 var grabbed_body: RigidBody2D = null
-
 var grab_hold_timer := 0.0
 var grab_input_held: bool = false
+var is_grounded: bool = false
+var jump_buffer_timer := 0.0
+var ladder_was_upside_down_when_climbed: bool = false
 
 func _ready() -> void:
 	set_spawn_point()
@@ -58,11 +52,15 @@ func set_spawn_point() -> void:
 	if target_spawn_point:
 		spawn_point = target_spawn_point
 		global_position = spawn_point.global_position
+		
+func _process(delta: float) -> void:
+	handle_grab_climb_input(delta)
+	handle_animation(delta)
+	if jump_buffer_timer > 0:
+		jump_buffer_timer -= delta
 
 func _physics_process(delta: float) -> void:
-	handle_grab_climb_input(delta)
 	handle_death()
-	handle_animation(delta)
 	if dying:
 		return
 	if current_ladder:
@@ -72,6 +70,8 @@ func _physics_process(delta: float) -> void:
 		handle_collisions()
 		
 func handle_grab_climb_input(delta: float) -> void:
+	if dying:
+		return
 	if Input.is_action_just_pressed(ability_action):
 		grab_hold_timer = 0.0
 		grab_input_held = true
@@ -80,7 +80,7 @@ func handle_grab_climb_input(delta: float) -> void:
 		if not grabbed_body and grab_hold_timer >= GRAB_HOLD_THRESHOLD:
 			var closest_body = find_closest_body_in_area()
 			if closest_body:
-				current_ladder = null
+				release_ladder()
 				try_grab(closest_body, global_position)
 	elif Input.is_action_just_released(ability_action) and grab_input_held:
 		grab_input_held = false
@@ -88,15 +88,26 @@ func handle_grab_climb_input(delta: float) -> void:
 			release_grab()
 		elif grab_hold_timer < GRAB_HOLD_THRESHOLD:
 			if current_ladder:
-				current_ladder.players_currently_climbing.erase(self)
-				current_ladder = null
+				release_ladder()
 			elif target_ladder:
 				release_grab()
-				current_ladder = target_ladder
-				var local_pos_on_ladder := current_ladder.to_local(global_position)
-				ladder_offset = clampf(local_pos_on_ladder.y, current_ladder.END_Y_OFFSET, current_ladder.START_Y_OFFSET)
-				if not current_ladder.players_currently_climbing.has(self):
-					current_ladder.players_currently_climbing.append(self)
+				climb_ladder()
+				
+
+func climb_ladder() -> void:
+	current_ladder = target_ladder
+	var local_pos_on_ladder := current_ladder.to_local(global_position)
+	ladder_offset = clampf(local_pos_on_ladder.y, current_ladder.END_Y_OFFSET, current_ladder.START_Y_OFFSET)
+	if not current_ladder.players_currently_climbing.has(self):
+		current_ladder.players_currently_climbing.append(self)
+	velocity = Vector2.ZERO
+	remaining_coyote_time = LADDER_COYOTE_TIME_LENGTH
+
+func release_ladder() -> void:
+	if not current_ladder:
+		return
+	current_ladder.players_currently_climbing.erase(self)
+	current_ladder = null
 		
 func handle_collisions() -> void:
 	var last_collision := get_last_slide_collision()
@@ -111,11 +122,14 @@ func handle_collisions() -> void:
 					die()
 					
 func die() -> void:
+	release_ladder()
+	release_grab()
 	dying = true
 	
 func handle_death() -> void:
-	if die_animation_time_remaining <= 0:
+	if dying and die_animation_time_remaining <= 0:
 		dying = false
+		die_animation_time_remaining = DIE_ANIMATION_LENGTH
 		if spawn_point:
 			global_position = spawn_point.global_position
 	
@@ -130,13 +144,13 @@ func handle_animation(delta: float) -> void:
 	elif dying and die_animation_time_remaining > 0:
 		sprite.play("death")
 		die_animation_time_remaining -= delta
-	else:
-		jump_animation_time_remaining = JUMP_ANIMATION_LENGTH
-		die_animation_time_remaining = DIE_ANIMATION_LENGTH
+	else:		
 		if current_ladder:
 			sprite.play("climb_up")
 			sprite.pause()
 			sprite.rotation = current_ladder.rotation
+			if ladder_was_upside_down_when_climbed:
+				sprite.rotate(PI)
 			if ladder_offset == current_ladder.START_Y_OFFSET or ladder_offset == current_ladder.END_Y_OFFSET:
 				return
 			if vertical_direction > 0:
@@ -151,7 +165,7 @@ func handle_animation(delta: float) -> void:
 	 
 func apply_default_movement(delta: float) -> void:
 	apply_gravity(delta)
-	handle_horizontal_movement()
+	handle_horizontal_movement(delta)
 	handle_jump()
 	move_and_slide()
 
@@ -169,38 +183,48 @@ func apply_ladder_movement(delta: float) -> void:
 	var dot_product: float = input_direction.dot(ladder_direction_rotated)
 	var projection_of_input_onto_ladder: float = dot_product / ladder_direction_rotated.length()
 	
-	ladder_velocity = lerpf(ladder_velocity, -projection_of_input_onto_ladder * LADDER_MOVE_SPEED, 0.6)
+	ladder_velocity = lerp_smooth(ladder_velocity, -projection_of_input_onto_ladder * LADDER_MOVE_SPEED, 0.6, delta)
 	
 	ladder_offset = clampf(ladder_offset + ladder_velocity * delta, current_ladder.END_Y_OFFSET, current_ladder.START_Y_OFFSET)
 	var local_position_on_ladder := Vector2(0, ladder_offset)
 	var global_position_on_ladder: Vector2 = current_ladder.to_global(local_position_on_ladder)
 	position = global_position_on_ladder
+	handle_jump()
 	
 func apply_gravity(delta: float) -> void:
 	if not is_on_floor():
-		if can_jump:
+		if remaining_coyote_time > 0:
 			remaining_coyote_time -= delta
 		velocity.y += GRAVITY * delta
+		is_grounded = false
 	else:
-		can_jump = true
+		is_grounded = true
 		remaining_coyote_time = COYOTE_TIME_LENGTH
 		velocity.y = 0
 
-func handle_horizontal_movement() -> void:
+func handle_horizontal_movement(delta: float) -> void:
 	var direction: float = Input.get_axis(move_left_action, move_right_action)
-	velocity.x = lerpf(velocity.x, direction * MOVE_SPEED, 0.2)
+	velocity.x = lerp_smooth(velocity.x, direction * MOVE_SPEED, 0.2, delta)
 	
 func handle_jump() -> void:
-	if remaining_coyote_time <= 0:
-		can_jump = false
 	if Input.is_action_just_pressed(jump_action):
-		if not can_jump:
-			return
-		can_jump = false
-		jumping = true
-		velocity.y = JUMP_SPEED
-	if jump_animation_time_remaining <= 0:
+		jump_buffer_timer = JUMP_BUFFER_TIME
+	if jumping and jump_animation_time_remaining <= 0:
 		jumping = false
+		jump_animation_time_remaining = JUMP_ANIMATION_LENGTH
+	if can_jump():
+		do_jump()
+
+func do_jump() -> void:
+	release_ladder()
+	jumping = true
+	velocity.y = JUMP_SPEED
+	jump_buffer_timer = 0.0
+	remaining_coyote_time = 0.0
+	move_and_slide()
+
+func can_jump() -> bool:
+	return ((is_grounded or current_ladder) or remaining_coyote_time > 0.0) and jump_buffer_timer > 0.0
 
 func _on_ladder_ladder_area_entered(ladder: Ladder, body: Node2D) -> void:
 	if body == self:
@@ -246,3 +270,12 @@ func release_grab():
 		grab_joint.queue_free()
 		grab_joint = null
 		grabbed_body = null
+
+# TODO: probably move to a more central location
+func lerp_smooth(current, target, smoothing_factor, delta, SMOOTH_DURATION = 0.01):
+	var decay_rate = pow(1 - smoothing_factor, 1.0 / SMOOTH_DURATION)
+	return lerp(current, target, 1.0 - pow(decay_rate, delta))
+
+func print_if_pid(string: String, id: int):
+	if player_id == id:
+		print(string)
