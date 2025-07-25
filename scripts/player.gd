@@ -9,7 +9,7 @@ const JUMP_SPEED = -300.0
 const MOVE_SPEED = 200.0
 const LADDER_MOVE_SPEED = 100.0
 const MASS = 5.0
-const GRAB_ACTION_HOLD_THRESHOLD = 0.5
+const GRAB_HOLD_THRESHOLD = 0.5
 
 @onready var move_left_action := "move_left_player%d" % player_id
 @onready var move_right_action := "move_right_player%d" % player_id
@@ -17,9 +17,7 @@ const GRAB_ACTION_HOLD_THRESHOLD = 0.5
 @onready var move_up_action := "move_up_player%d" % player_id
 
 @onready var jump_action := "jump_player%d" % player_id
-@onready var climb_ladder_action := "interact_player%d" % player_id
-
-@onready var grab_action := "grab_player%d" % player_id
+@onready var ability_action := "grab_player%d" % player_id
 
 @onready var sprite = $AnimatedSprite2D
 
@@ -74,21 +72,21 @@ func _physics_process(delta: float) -> void:
 		handle_collisions()
 		
 func handle_grab_climb_input(delta: float) -> void:
-	if Input.is_action_just_pressed(grab_action):
+	if Input.is_action_just_pressed(ability_action):
 		grab_hold_timer = 0.0
 		grab_input_held = true
-	elif Input.is_action_pressed(grab_action) and grab_input_held:
+	elif Input.is_action_pressed(ability_action) and grab_input_held:
 		grab_hold_timer += delta
-		if not grabbed_body and grab_hold_timer >= GRAB_ACTION_HOLD_THRESHOLD:
+		if not grabbed_body and grab_hold_timer >= GRAB_HOLD_THRESHOLD:
 			var closest_body = find_closest_body_in_area()
 			if closest_body:
 				current_ladder = null
 				try_grab(closest_body, global_position)
-	elif Input.is_action_just_released(grab_action) and grab_input_held:
+	elif Input.is_action_just_released(ability_action) and grab_input_held:
 		grab_input_held = false
 		if grabbed_body:
 			release_grab()
-		elif grab_hold_timer < GRAB_ACTION_HOLD_THRESHOLD:
+		elif grab_hold_timer < GRAB_HOLD_THRESHOLD:
 			if current_ladder:
 				current_ladder.players_currently_climbing.erase(self)
 				current_ladder = null
@@ -158,15 +156,25 @@ func apply_default_movement(delta: float) -> void:
 	move_and_slide()
 
 func apply_ladder_movement(delta: float) -> void:
-	handle_ladder_vertical_movement()
+	var vertical_direction: float = Input.get_axis(move_down_action, move_up_action)
+	var horizontal_direction: float = Input.get_axis(move_left_action, move_right_action)
+	
+	var input_direction: Vector2 = Vector2(horizontal_direction, vertical_direction)
+	if input_direction.length() > 1.0:
+		input_direction = input_direction.normalized()
+		
+	var ladder_direction: Vector2 = Vector2(cos(current_ladder.rotation), -sin(current_ladder.rotation))
+	var ladder_direction_rotated: Vector2 = Vector2(-ladder_direction.y, ladder_direction.x)
+	
+	var dot_product: float = input_direction.dot(ladder_direction_rotated)
+	var projection_of_input_onto_ladder: float = dot_product / ladder_direction_rotated.length()
+	
+	ladder_velocity = lerpf(ladder_velocity, -projection_of_input_onto_ladder * LADDER_MOVE_SPEED, 0.6)
+	
 	ladder_offset = clampf(ladder_offset + ladder_velocity * delta, current_ladder.END_Y_OFFSET, current_ladder.START_Y_OFFSET)
 	var local_position_on_ladder := Vector2(0, ladder_offset)
 	var global_position_on_ladder: Vector2 = current_ladder.to_global(local_position_on_ladder)
 	position = global_position_on_ladder
-	
-func handle_ladder_vertical_movement() -> void:
-	var direction: float = Input.get_axis(move_down_action, move_up_action)
-	ladder_velocity = lerpf(ladder_velocity, -direction * LADDER_MOVE_SPEED, 0.6)
 	
 func apply_gravity(delta: float) -> void:
 	if not is_on_floor():

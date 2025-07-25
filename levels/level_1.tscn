@@ -971,10 +971,10 @@ tile_map_data = PackedByteArray("AADs/wIAAAALAAIAAADs/wMAAAAKAAQAAADs/wQAAAAKAAQ
 tile_set = SubResource("TileSet_fc0e3")
 
 [node name="SpawnPoint" parent="." instance=ExtResource("3_n46q3")]
-position = Vector2(-215, 0)
+position = Vector2(-305, 0)
 
 [node name="SpawnPoint2" parent="." instance=ExtResource("3_n46q3")]
-position = Vector2(-122, 3)
+position = Vector2(-293, 0)
 player_id = 2
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]

@@ -17,7 +17,7 @@ z_index = 15
 position = Vector2(-247, -134)
 
 [node name="Player2" parent="Players" instance=ExtResource("1_e2o6t")]
-position = Vector2(-212, -25)
+position = Vector2(-129, -25)
 player_id = 2
 player_color = Color(0.396745, 0.500633, 1, 1)
 
@@ -25,10 +25,10 @@ player_color = Color(0.396745, 0.500633, 1, 1)
 
 [node name="Ladder" parent="." groups=["grabbable"] instance=ExtResource("2_feb5d")]
 position = Vector2(-248, -72)
-rotation = 0.129398
+rotation = 0.637045
 
 [node name="RigidBody2D" type="RigidBody2D" parent="." groups=["grabbable"]]
-position = Vector2(-285, 15)
+position = Vector2(-214, 15)
 collision_layer = 8
 collision_mask = 13
 
