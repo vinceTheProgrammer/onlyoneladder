@@ -15,6 +15,7 @@ const GRAVITY = 980.0 # pixels/sec^2
 const JUMP_SPEED = -300.0
 const MOVE_SPEED = 200.0
 const LADDER_MOVE_SPEED = 100.0
+const LADDER_MOVE_SPEED_HORIZONTAL = 10.0
 const MASS = 5.0
 const GRAB_HOLD_THRESHOLD = 0.5
 const JUMP_BUFFER_TIME := 0.15
@@ -31,8 +32,10 @@ var die_animation_time_remaining: float = DIE_ANIMATION_LENGTH
 var jump_animation_time_remaining: float = JUMP_ANIMATION_LENGTH
 var current_ladder: Ladder
 var target_ladder: Ladder
-var ladder_offset := 20.0
+var ladder_offset := 0.0
+var ladder_offset_horizontal := 0.0
 var ladder_velocity := 0.0
+var ladder_velocity_horizontal := 0.0
 var grab_joint: PinJoint2D = null
 var grabbed_body: RigidBody2D = null
 var grab_hold_timer := 0.0
@@ -81,7 +84,7 @@ func handle_grab_climb_input(delta: float) -> void:
 			var closest_body = find_closest_body_in_area()
 			if closest_body:
 				release_ladder()
-				try_grab(closest_body, global_position)
+				try_grab(closest_body)
 	elif Input.is_action_just_released(ability_action) and grab_input_held:
 		grab_input_held = false
 		if grabbed_body:
@@ -98,16 +101,22 @@ func climb_ladder() -> void:
 	current_ladder = target_ladder
 	var local_pos_on_ladder := current_ladder.to_local(global_position)
 	ladder_offset = clampf(local_pos_on_ladder.y, current_ladder.END_Y_OFFSET, current_ladder.START_Y_OFFSET)
-	if not current_ladder.players_currently_climbing.has(self):
-		current_ladder.players_currently_climbing.append(self)
+	add_self_to_ladder_array(current_ladder)
 	velocity = Vector2.ZERO
 	remaining_coyote_time = LADDER_COYOTE_TIME_LENGTH
 
 func release_ladder() -> void:
 	if not current_ladder:
 		return
-	current_ladder.players_currently_climbing.erase(self)
+	remove_self_from_ladder_array(current_ladder)
 	current_ladder = null
+	
+func add_self_to_ladder_array(ladder: Ladder) -> void:
+	if not ladder.players_currently_climbing.has(self):
+		ladder.players_currently_climbing.append(self)
+		
+func remove_self_from_ladder_array(ladder: Ladder) -> void:
+	ladder.players_currently_climbing.erase(self)
 		
 func handle_collisions() -> void:
 	var last_collision := get_last_slide_collision()
@@ -162,8 +171,49 @@ func handle_animation(delta: float) -> void:
 			sprite.flip_h = direction < 0
 		else:
 			sprite.play("idle")
+			
+func apply_ladder_midair_grab_movement(ladder: Ladder, delta: float) -> void:
+	# TODO: if many of these lines end up staying the same as the lines in apply_ladder_movement(), put them into a new function
+	var vertical_direction: float = Input.get_axis(move_down_action, move_up_action)
+	var horizontal_direction: float = Input.get_axis(move_left_action, move_right_action)
+
+	var input_direction: Vector2 = Vector2(horizontal_direction, vertical_direction)
+	if input_direction.length() > 1.0:
+		input_direction = input_direction.normalized()
+		
+	var ladder_direction: Vector2 = Vector2(cos(ladder.rotation), -sin(ladder.rotation))
+	var ladder_direction_rotated: Vector2 = Vector2(-ladder_direction.x, -ladder_direction.y)
+	
+	var dot_product: float = input_direction.dot(ladder_direction_rotated)
+	var projection_of_input_onto_ladder: float = dot_product / ladder_direction_rotated.length()
+	
+	ladder_velocity_horizontal = lerp_smooth(ladder_velocity_horizontal, -projection_of_input_onto_ladder * LADDER_MOVE_SPEED_HORIZONTAL, 0.6, delta)
+	
+	ladder_offset_horizontal = clampf(ladder_offset_horizontal + ladder_velocity_horizontal * delta, ladder.LEFT_OFFSET, ladder.RIGHT_OFFSET)
+	
+	var local_position_on_ladder := Vector2(ladder_offset_horizontal, ladder_offset)
+	var global_position_on_ladder: Vector2 = ladder.to_global(local_position_on_ladder)
+	position = global_position_on_ladder
 	 
 func apply_default_movement(delta: float) -> void:
+	if grabbed_body:
+		if not is_on_floor():
+			if grab_joint:
+				release_grab_joint()
+			if grabbed_body is Ladder:
+				add_self_to_ladder_array(grabbed_body)
+				var local_pos_on_ladder := grabbed_body.to_local(global_position)
+				ladder_offset = clampf(local_pos_on_ladder.y, grabbed_body.END_Y_OFFSET, grabbed_body.START_Y_OFFSET)
+				apply_ladder_midair_grab_movement(grabbed_body, delta)
+			return
+		elif is_on_floor():
+			if grab_joint == null:
+				try_grab(grabbed_body)
+	
+		if grabbed_body is Ladder:
+			remove_self_from_ladder_array(grabbed_body)
+		
+				
 	apply_gravity(delta)
 	handle_horizontal_movement(delta)
 	handle_jump()
@@ -172,7 +222,7 @@ func apply_default_movement(delta: float) -> void:
 func apply_ladder_movement(delta: float) -> void:
 	var vertical_direction: float = Input.get_axis(move_down_action, move_up_action)
 	var horizontal_direction: float = Input.get_axis(move_left_action, move_right_action)
-	
+
 	var input_direction: Vector2 = Vector2(horizontal_direction, vertical_direction)
 	if input_direction.length() > 1.0:
 		input_direction = input_direction.normalized()
@@ -218,7 +268,7 @@ func handle_jump() -> void:
 func do_jump() -> void:
 	release_ladder()
 	jumping = true
-	velocity.y = JUMP_SPEED
+	velocity.y = JUMP_SPEED if not (grabbed_body is Ladder) else JUMP_SPEED / 2
 	jump_buffer_timer = 0.0
 	remaining_coyote_time = 0.0
 	move_and_slide()
@@ -248,7 +298,7 @@ func find_closest_body_in_area() -> RigidBody2D:
 				closest = body
 	return closest
 	
-func try_grab(body: RigidBody2D, grab_pos: Vector2):
+func try_grab(body: RigidBody2D):
 	if grab_joint: return
 	grab_joint = PinJoint2D.new()
 	grab_joint.node_a = self.get_path()
@@ -266,10 +316,14 @@ func try_grab(body: RigidBody2D, grab_pos: Vector2):
 	grabbed_body = body
 
 func release_grab():
+	if grabbed_body:
+		release_grab_joint()
+		grabbed_body = null
+
+func release_grab_joint():
 	if grab_joint:
 		grab_joint.queue_free()
 		grab_joint = null
-		grabbed_body = null
 
 # TODO: probably move to a more central location
 func lerp_smooth(current, target, smoothing_factor, delta, SMOOTH_DURATION = 0.01):

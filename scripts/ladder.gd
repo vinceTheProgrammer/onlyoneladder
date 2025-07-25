@@ -6,6 +6,8 @@ signal ladder_area_exited(ladder: RigidBody2D, body: Node2D)
 
 const START_Y_OFFSET = 63
 const END_Y_OFFSET = -63
+const LEFT_OFFSET = -7
+const RIGHT_OFFSET = -LEFT_OFFSET
 
 var players_currently_climbing: Array[Player] = []
 
