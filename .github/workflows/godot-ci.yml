@@ -80,6 +80,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           lfs: true
+          fetch-depth: 0
       - name: Setup
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
@@ -98,12 +99,42 @@ jobs:
       - name: Install rsync 📚
         run: |
           apt-get update && apt-get install -y rsync
+
+      - name: Git Fetch
+        run: |
+          git fetch --tags origin
+          git fetch origin main
+
       - name: Deploy to GitHub Pages 🚀
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: JamesIves/github-pages-deploy-action@releases/v4
+        if: always()
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: build/web # The folder the action should deploy.
+          branch: gh-pages
+          folder: build/web
+          target-folder: ${{ startsWith(github.ref, 'refs/tags/v') && 'stable' || 'dev' }}
+
+      - name: Generate Index Page Metadata
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+        run: |
+          # Get latest tag
+          LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+          
+          # Commit count difference
+          COMMITS_BEHIND=$(git rev-list --count ${LATEST_TAG}..main)
+          
+          # Latest commit dates
+          DEV_DATE=$(git log -1 --format=%cd origin/main)
+          STABLE_DATE=$(git log -1 --format=%cd ${LATEST_TAG})
+          
+          mkdir -p deploy-root
+          echo "<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Only One Ladder</title></head><body><h1>Only One Ladder</h1><ul><li><a href='./stable/'>Stable Build</a> - Last updated: ${STABLE_DATE}</li><li><a href='./dev/'>Development Build</a> - Last updated: ${DEV_DATE}</li></ul><p>The development branch is <strong>${COMMITS_BEHIND} commits ahead</strong> of the last stable release (${LATEST_TAG}).</p></body></html>" > deploy-root/index.html
+
+      - name: Upload index.html to root of GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: deploy-root
+          clean: false
 
   export-mac:
     name: Mac Export
