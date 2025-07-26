@@ -102,6 +102,7 @@ jobs:
 
       - name: Git Fetch
         run: |
+          git config --global --add safe.directory "$(pwd)"
           git fetch --tags origin
           git fetch origin main
 
