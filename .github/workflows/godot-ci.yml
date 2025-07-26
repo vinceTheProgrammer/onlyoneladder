@@ -117,16 +117,24 @@ jobs:
       - name: Generate Index Page Metadata
         if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
         run: |
+          # Trust the working directory (avoids "dubious ownership" error)
+          git config --global --add safe.directory "$(pwd)"
+
+          # Fetch all tags and branches
+          git fetch --tags origin
+          git fetch origin +refs/heads/*:refs/remotes/origin/*
+
           # Get latest tag
           LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
-          
-          # Commit count difference
-          COMMITS_BEHIND=$(git rev-list --count ${LATEST_TAG}..main)
-          
-          # Latest commit dates
+
+          # Count commits main is ahead of the latest tag
+          COMMITS_BEHIND=$(git rev-list --count ${LATEST_TAG}..origin/main)
+
+          # Commit dates
           DEV_DATE=$(git log -1 --format=%cd origin/main)
           STABLE_DATE=$(git log -1 --format=%cd ${LATEST_TAG})
-          
+
+          # Generate index.html
           mkdir -p deploy-root
           echo "<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Only One Ladder</title></head><body><h1>Only One Ladder</h1><ul><li><a href='./stable/'>Stable Build</a> - Last updated: ${STABLE_DATE}</li><li><a href='./dev/'>Development Build</a> - Last updated: ${DEV_DATE}</li></ul><p>The development branch is <strong>${COMMITS_BEHIND} commits ahead</strong> of the last stable release (${LATEST_TAG}).</p></body></html>" > deploy-root/index.html
 
