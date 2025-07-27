@@ -1,5 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://du2pye3f8kkj2"]
+[gd_scene load_steps=7 format=3 uid="uid://du2pye3f8kkj2"]
 
+[ext_resource type="PackedScene" uid="uid://dwdl2jcfgf12k" path="res://scenes/pause_menu.tscn" id="1_7jktm"]
 [ext_resource type="PackedScene" uid="uid://g5xryfrkrgvy" path="res://scenes/player.tscn" id="1_e2o6t"]
 [ext_resource type="PackedScene" uid="uid://t5d7f4s4611a" path="res://HZ edit/scenes/NewPlayer.tscn" id="2_7jktm"]
 [ext_resource type="PackedScene" uid="uid://sxaprexj827t" path="res://levels/level_1.tscn" id="2_fc0e3"]
@@ -7,7 +8,11 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_feb5d"]
 
-[node name="Node2D" type="Node2D"]
+[node name="Game" type="Node2D"]
+
+[node name="PauseMenu" parent="." instance=ExtResource("1_7jktm")]
+visible = false
+z_index = 10
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
@@ -18,9 +23,12 @@ z_index = 15
 position = Vector2(-247, -134)
 
 [node name="Player2" parent="Players" instance=ExtResource("1_e2o6t")]
-position = Vector2(-129, -25)
+position = Vector2(-281, -92)
 player_id = 2
 player_color = Color(0.396745, 0.500633, 1, 1)
+
+[node name="Player_v2" parent="Players" instance=ExtResource("2_7jktm")]
+position = Vector2(169, -18)
 
 [node name="Level1" parent="." instance=ExtResource("2_fc0e3")]
 
@@ -49,9 +57,6 @@ offset_bottom = 30.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.5, 0.5)
-
-[node name="Player_v2" parent="." instance=ExtResource("2_7jktm")]
-position = Vector2(-171, -18)
 
 [connection signal="ladder_area_entered" from="Ladder" to="Players/Player" method="_on_ladder_ladder_area_entered"]
 [connection signal="ladder_area_entered" from="Ladder" to="Players/Player2" method="_on_ladder_ladder_area_entered"]

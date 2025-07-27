@@ -1,0 +1,86 @@
+[gd_scene load_steps=4 format=3 uid="uid://dwdl2jcfgf12k"]
+
+[ext_resource type="Script" uid="uid://bqae3algy5iw4" path="res://scripts/pause_menu.gd" id="1_n87rw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n87rw"]
+bg_color = Color(0.356863, 0.658824, 0.67451, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_myx47"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[node name="PauseMenu" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.503446, 0.503446)
+script = ExtResource("1_n87rw")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = -89.384
+offset_top = -129.11
+offset_right = 91.616
+offset_bottom = -101.11
+grow_horizontal = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+text = "pause menu"
+horizontal_alignment = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -109.0
+offset_top = -93.0
+offset_right = 110.0
+offset_bottom = 79.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_n87rw")
+
+[node name="Panel" type="Panel" parent="PanelContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_myx47")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Resume" type="Button" parent="PanelContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "resume"
+
+[node name="Restart" type="Button" parent="PanelContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Restart"
+
+[node name="Options" type="Button" parent="PanelContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Options"
+
+[node name="BTM" type="Button" parent="PanelContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Back To Menu"
+
+[node name="Quit" type="Button" parent="PanelContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Quit Game"
+
+[connection signal="pressed" from="PanelContainer/Panel/VBoxContainer/Resume" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="PanelContainer/Panel/VBoxContainer/Restart" to="." method="_on_restart_pressed"]
+[connection signal="pressed" from="PanelContainer/Panel/VBoxContainer/Quit" to="." method="_on_quit_pressed"]

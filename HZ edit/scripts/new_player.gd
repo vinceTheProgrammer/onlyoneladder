@@ -29,7 +29,10 @@ class_name PlayerV2
 @onready var ability_action := "grab_player%d" % player_id
 
 
+
 func _ready() -> void:
+	
+	
 	match player_id:
 		1:
 			cursor_color = Color.SKY_BLUE

@@ -34,7 +34,6 @@ func State_Physics_Update(delta):
 		
 		ThisPlayer.velocity.y += ThisPlayer.gravity * delta
 		ThisPlayer.anims.play("Midair")
-		#Transitioned.emit(self, "Midair")
 		coyoteTime -= delta
 		print(coyoteTime)
 		
