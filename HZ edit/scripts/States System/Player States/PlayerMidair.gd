@@ -2,7 +2,7 @@ extends State
 class_name PlayerMidair
 
 
-@export var ThisPlayer : CharacterBody2D
+@onready var ThisPlayer = get_parent().playerx
 
 
 func State_Enter():

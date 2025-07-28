@@ -18,7 +18,8 @@ class_name PlayerV2
 @export_category("State Objects") # children that need to be manipulated by the state machine 
 
 @export var anims: AnimatedSprite2D
-@export var player_cursor: Polygon2D
+
+
 
 
 @onready var move_left_action := "move_left_player%d" % player_id
@@ -27,6 +28,10 @@ class_name PlayerV2
 @onready var move_up_action := "move_up_player%d" % player_id
 @onready var jump_action := "jump_player%d" % player_id
 @onready var ability_action := "grab_player%d" % player_id
+
+
+@onready var player_cursor: Polygon2D = $Cursor
+@onready var sm: Node = $StateMachine
 
 
 

@@ -2,7 +2,7 @@ extends State
 class_name PlayerMove
 
 
-@export var ThisPlayer : CharacterBody2D
+@onready var ThisPlayer = get_parent().playerx
 
 var coyoteTime : float
 
@@ -35,7 +35,6 @@ func State_Physics_Update(delta):
 		ThisPlayer.velocity.y += ThisPlayer.gravity * delta
 		ThisPlayer.anims.play("Midair")
 		coyoteTime -= delta
-		print(coyoteTime)
 		
 		if Input.is_action_just_pressed(ThisPlayer.jump_action) and coyoteTime > 0:
 			ThisPlayer.velocity.y -= ThisPlayer.jump_force

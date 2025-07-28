@@ -1,7 +1,8 @@
 extends Node
 
 
-@export var Init_State : State
+@export var init_state : State
+@export var playerx : PlayerV2
 
 var current_state : State
 var states : Dictionary = {}
@@ -11,9 +12,9 @@ func _ready() -> void:
 		if child is State:
 			states[child.name.to_lower()] = child
 			child.Transitioned.connect(on_child_transition)
-	if Init_State:
-		Init_State.State_Enter()
-		current_state = Init_State
+	if init_state:
+		init_state.State_Enter()
+		current_state = init_state
 
 func _process(delta: float) -> void:
 	if current_state:

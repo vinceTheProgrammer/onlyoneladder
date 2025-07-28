@@ -242,7 +242,6 @@ shape = SubResource("RectangleShape2D_v6fml")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_fq1a3")
 animation = &"idle"
-frame_progress = 0.993312
 
 [node name="GrabArea" type="Area2D" parent="."]
 collision_layer = 0

@@ -2,7 +2,7 @@ extends State
 class_name PlayerIdle
 
 
-@export var ThisPlayer : CharacterBody2D
+@onready var ThisPlayer = get_parent().playerx
 
 
 func State_Enter():
@@ -21,12 +21,12 @@ func State_Physics_Update(delta):
 	
 	
 	if Input.is_action_just_pressed(ThisPlayer.jump_action):
-		if Input.is_action_just_pressed(ThisPlayer.jump_action):
-			ThisPlayer.velocity.y -= ThisPlayer.jump_force
-			ThisPlayer.anims.play("Jump")
-			Transitioned.emit(self, "Midair")
+		ThisPlayer.velocity.y -= ThisPlayer.jump_force
+		ThisPlayer.anims.play("Jump")
+		Transitioned.emit(self, "Midair")
 	
-	
+	if Input.is_action_just_pressed("test keybind"):
+		Transitioned.emit(self, "Death")
 	
 	
 	if !ThisPlayer.is_on_floor():

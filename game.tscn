@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://du2pye3f8kkj2"]
+[gd_scene load_steps=8 format=3 uid="uid://du2pye3f8kkj2"]
 
 [ext_resource type="PackedScene" uid="uid://dwdl2jcfgf12k" path="res://scenes/pause_menu.tscn" id="1_7jktm"]
 [ext_resource type="PackedScene" uid="uid://g5xryfrkrgvy" path="res://scenes/player.tscn" id="1_e2o6t"]
 [ext_resource type="PackedScene" uid="uid://t5d7f4s4611a" path="res://HZ edit/scenes/NewPlayer.tscn" id="2_7jktm"]
 [ext_resource type="PackedScene" uid="uid://sxaprexj827t" path="res://levels/level_1.tscn" id="2_fc0e3"]
 [ext_resource type="PackedScene" uid="uid://duohx147y3mx3" path="res://scenes/ladder.tscn" id="2_feb5d"]
+[ext_resource type="PackedScene" uid="uid://bsosjtn8i4bwx" path="res://HZ edit/scenes/saw.tscn" id="6_ryrav"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_feb5d"]
 
@@ -57,6 +58,9 @@ offset_bottom = 30.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.5, 0.5)
+
+[node name="Saw" parent="." instance=ExtResource("6_ryrav")]
+position = Vector2(234, -18)
 
 [connection signal="ladder_area_entered" from="Ladder" to="Players/Player" method="_on_ladder_ladder_area_entered"]
 [connection signal="ladder_area_entered" from="Ladder" to="Players/Player2" method="_on_ladder_ladder_area_entered"]
