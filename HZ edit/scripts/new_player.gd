@@ -9,6 +9,7 @@ class_name PlayerV2
 
 @export var player_id : int = 1
 @export var speed : int = 200
+@export var ladder_speed: float = 100.0
 @export var jump_force : int = 400
 @export var coyote_time : float = 0.2
 @export var gravity : int = 980
@@ -34,6 +35,8 @@ class_name PlayerV2
 @onready var sm: Node = $StateMachine
 
 
+var target_ladder: Ladder
+
 
 func _ready() -> void:
 	
@@ -50,3 +53,12 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	move_and_slide()
+
+
+func _on_ladder_area_entered(ladder: Ladder, body: Node2D) -> void:
+	if body == self:
+		target_ladder = ladder
+
+func _on_ladder_area_exited(ladder: Ladder, body: Node2D) -> void:
+	if body == self and target_ladder == ladder:
+		target_ladder = null

@@ -28,7 +28,7 @@ position = Vector2(-281, -92)
 player_id = 2
 player_color = Color(0.396745, 0.500633, 1, 1)
 
-[node name="Player_v2" parent="Players" instance=ExtResource("2_7jktm")]
+[node name="Player_v2" parent="Players" groups=["player"] instance=ExtResource("2_7jktm")]
 position = Vector2(169, -18)
 
 [node name="Level1" parent="." instance=ExtResource("2_fc0e3")]

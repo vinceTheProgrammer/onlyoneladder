@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://t5d7f4s4611a"]
+[gd_scene load_steps=44 format=3 uid="uid://t5d7f4s4611a"]
 
 [ext_resource type="Script" uid="uid://bv608whlos5tc" path="res://HZ edit/scripts/new_player.gd" id="1_86exs"]
 [ext_resource type="Texture2D" uid="uid://bletmwgtw0dut" path="res://assets/16x16 2D Platformer - Programmer Art/Animations/Player/Player - Idle.png" id="1_to7r7"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://c1yhp6ul5jwwn" path="res://HZ edit/scripts/States System/Player States/PlayerMove.gd" id="9_ve1v3"]
 [ext_resource type="Script" uid="uid://mm5si7uat7p6" path="res://HZ edit/scripts/States System/Player States/PlayerMidair.gd" id="10_8wxt3"]
 [ext_resource type="Script" uid="uid://deax50xakbi3j" path="res://HZ edit/scripts/States System/Player States/PlayerDeath.gd" id="11_h7weg"]
+[ext_resource type="Script" uid="uid://c6stq3y10gtp8" path="res://HZ edit/scripts/States System/Player States/PlayerLadderMove.gd" id="12_nendj"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_h7weg"]
 atlas = ExtResource("2_oog5y")
@@ -291,6 +292,9 @@ metadata/_custom_type_script = "uid://mm5si7uat7p6"
 [node name="Death" type="Node" parent="StateMachine"]
 script = ExtResource("11_h7weg")
 metadata/_custom_type_script = "uid://deax50xakbi3j"
+
+[node name="LadderMoving" type="Node" parent="StateMachine"]
+script = ExtResource("12_nendj")
 
 [node name="Cursor" type="Polygon2D" parent="."]
 z_index = 11

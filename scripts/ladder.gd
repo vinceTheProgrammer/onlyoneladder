@@ -11,6 +11,9 @@ const RIGHT_OFFSET = -LEFT_OFFSET
 
 var players_currently_climbing: Array[Player] = []
 
+func _ready() -> void:
+	connect_ladder_signals_to_players()
+
 func _physics_process(delta: float) -> void:
 	update_center_of_mass()
 	queue_redraw()
@@ -48,3 +51,15 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 func _on_area_2d_body_exited(body: Node2D) -> void:
 	if body.is_in_group("player"):
 		emit_signal("ladder_area_exited", self, body)
+		
+		
+func connect_ladder_signals_to_players():
+	for player in get_tree().get_nodes_in_group("player"):
+		if player is PlayerV2:
+			var enter_callable = Callable(player, "_on_ladder_area_entered")
+			if not is_connected("ladder_area_entered", enter_callable):
+				connect("ladder_area_entered", enter_callable)
+
+			var exit_callable = Callable(player, "_on_ladder_area_exited")
+			if not is_connected("ladder_area_exited", exit_callable):
+				connect("ladder_area_exited", exit_callable)
