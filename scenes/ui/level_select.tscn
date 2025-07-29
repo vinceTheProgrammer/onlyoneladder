@@ -1,0 +1,77 @@
+[gd_scene load_steps=4 format=3 uid="uid://dmb18n3vquccc"]
+
+[ext_resource type="Script" uid="uid://e3puvhiyjpfn" path="res://scripts/level_select.gd" id="1_l0h45"]
+[ext_resource type="Script" uid="uid://boee43057157t" path="res://scripts/level_list.gd" id="1_x15a5"]
+[ext_resource type="Texture2D" uid="uid://bnfjmv83tdmkr" path="res://assets/test-level-preview.webp" id="3_7l8mc"]
+
+[node name="LevelSelect" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_l0h45")
+
+[node name="ItemList" type="Tree" parent="."]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 64.0
+offset_right = 192.0
+offset_bottom = 344.0
+script = ExtResource("1_x15a5")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -280.0
+offset_top = 24.0
+offset_right = -189.0
+offset_bottom = 47.0
+grow_horizontal = 2
+scale = Vector2(1.31581, 1.31581)
+text = "Level Select"
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 456.0
+offset_top = 312.0
+offset_right = 624.0
+offset_bottom = 343.0
+text = "Continue"
+
+[node name="Test-level-preview" type="Sprite2D" parent="."]
+position = Vector2(321.218, 131.687)
+scale = Vector2(0.315231, 0.315231)
+texture = ExtResource("3_7l8mc")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -1
+layout_mode = 0
+offset_left = 200.0
+offset_top = 64.0
+offset_right = 440.0
+offset_bottom = 200.0
+color = Color(0.0177324, 0.0177324, 0.0177324, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+z_index = -1
+layout_mode = 0
+offset_left = 200.0
+offset_top = 208.0
+offset_right = 440.0
+offset_bottom = 344.0
+color = Color(0, 0, 0, 0.439216)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 208.0
+offset_top = 216.0
+offset_right = 432.0
+offset_bottom = 336.0
+bbcode_enabled = true
+text = "[b]Level 1[/b]
+
+A very cool level."
