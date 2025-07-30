@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://bsosjtn8i4bwx"]
 
-[ext_resource type="Script" uid="uid://dk11imserndhb" path="res://HZ edit/scripts/saw.gd" id="1_5hp3m"]
+[ext_resource type="Script" uid="uid://dk11imserndhb" path="res://scripts/entities/saw.gd" id="1_5hp3m"]
 [ext_resource type="Texture2D" uid="uid://cdxxt2k32sqb" path="res://assets/16x16 2D Platformer - Programmer Art/Animations/Sawblades/Big Sawblades/Big Sawblades.png" id="2_h6g2c"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_grpdm"]

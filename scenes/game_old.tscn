@@ -1,17 +1,17 @@
 [gd_scene load_steps=8 format=3 uid="uid://du2pye3f8kkj2"]
 
-[ext_resource type="PackedScene" uid="uid://dwdl2jcfgf12k" path="res://scenes/pause_menu.tscn" id="1_7jktm"]
-[ext_resource type="PackedScene" uid="uid://g5xryfrkrgvy" path="res://scenes/player.tscn" id="1_e2o6t"]
-[ext_resource type="PackedScene" uid="uid://t5d7f4s4611a" path="res://HZ edit/scenes/NewPlayer.tscn" id="2_7jktm"]
-[ext_resource type="PackedScene" uid="uid://sxaprexj827t" path="res://levels/level_1.tscn" id="2_fc0e3"]
-[ext_resource type="PackedScene" uid="uid://duohx147y3mx3" path="res://scenes/ladder.tscn" id="2_feb5d"]
-[ext_resource type="PackedScene" uid="uid://bsosjtn8i4bwx" path="res://HZ edit/scenes/saw.tscn" id="6_ryrav"]
+[ext_resource type="PackedScene" uid="uid://dwdl2jcfgf12k" path="res://scenes/ui/pause_menu.tscn" id="1_p57ef"]
+[ext_resource type="PackedScene" uid="uid://g5xryfrkrgvy" path="res://scenes/entities/player.tscn" id="2_u5sy4"]
+[ext_resource type="PackedScene" uid="uid://t5d7f4s4611a" path="res://scenes/entities/NewPlayer.tscn" id="3_gee14"]
+[ext_resource type="PackedScene" uid="uid://sxaprexj827t" path="res://scenes/levels/level_1.tscn" id="4_0tnpc"]
+[ext_resource type="PackedScene" uid="uid://duohx147y3mx3" path="res://scenes/entities/ladder.tscn" id="5_vtaks"]
+[ext_resource type="PackedScene" uid="uid://bsosjtn8i4bwx" path="res://scenes/entities/saw.tscn" id="6_kvpfn"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_feb5d"]
 
 [node name="Game" type="Node2D"]
 
-[node name="PauseMenu" parent="." instance=ExtResource("1_7jktm")]
+[node name="PauseMenu" parent="." instance=ExtResource("1_p57ef")]
 visible = false
 z_index = 10
 
@@ -19,21 +19,21 @@ z_index = 10
 
 [node name="Players" type="Node" parent="."]
 
-[node name="Player" parent="Players" instance=ExtResource("1_e2o6t")]
+[node name="Player" parent="Players" instance=ExtResource("2_u5sy4")]
 z_index = 15
 position = Vector2(-247, -134)
 
-[node name="Player2" parent="Players" instance=ExtResource("1_e2o6t")]
+[node name="Player2" parent="Players" instance=ExtResource("2_u5sy4")]
 position = Vector2(-281, -92)
 player_id = 2
 player_color = Color(0.396745, 0.500633, 1, 1)
 
-[node name="Player_v2" parent="Players" groups=["player"] instance=ExtResource("2_7jktm")]
+[node name="Player_v2" parent="Players" groups=["player"] instance=ExtResource("3_gee14")]
 position = Vector2(169, -18)
 
-[node name="Level1" parent="." instance=ExtResource("2_fc0e3")]
+[node name="Level1" parent="." instance=ExtResource("4_0tnpc")]
 
-[node name="Ladder" parent="." groups=["grabbable"] instance=ExtResource("2_feb5d")]
+[node name="Ladder" parent="." groups=["grabbable"] instance=ExtResource("5_vtaks")]
 position = Vector2(-248, -72)
 rotation = 0.637045
 
@@ -59,7 +59,7 @@ grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.5, 0.5)
 
-[node name="Saw" parent="." instance=ExtResource("6_ryrav")]
+[node name="Saw" parent="." instance=ExtResource("6_kvpfn")]
 position = Vector2(234, -18)
 
 [connection signal="ladder_area_entered" from="Ladder" to="Players/Player" method="_on_ladder_ladder_area_entered"]

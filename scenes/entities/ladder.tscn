@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=4 uid="uid://duohx147y3mx3"]
 
-[ext_resource type="Script" uid="uid://dv3vmidic0fkn" path="res://scripts/ladder.gd" id="1_xxwne"]
+[ext_resource type="Script" uid="uid://dv3vmidic0fkn" path="res://scripts/entities/ladder.gd" id="1_xxwne"]
 [ext_resource type="Texture2D" uid="uid://cvg0ypp6wdsu8" path="res://assets/16x16 2D Platformer - Programmer Art/Tileset/16x16Tileset-resize.png" id="2_xb1tl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e2o6t"]

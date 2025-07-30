@@ -11,13 +11,15 @@ config_version=5
 [application]
 
 config/name="OnlyOneLadder"
-run/main_scene="res://game.tscn"
+run/main_scene="uid://mkd0353rjue2"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 
-Globals="*res://scripts/globals.gd"
+Globals="*res://scripts/autoload/globals.gd"
+GameManager="*res://scripts/autoload/game_manager.gd"
+LevelDatabase="*res://scripts/autoload/level_database.gd"
 
 [display]
 

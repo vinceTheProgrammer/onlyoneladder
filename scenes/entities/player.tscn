@@ -1,6 +1,6 @@
 [gd_scene load_steps=37 format=3 uid="uid://g5xryfrkrgvy"]
 
-[ext_resource type="Script" uid="uid://chsgljjyqjm88" path="res://scripts/player.gd" id="1_p0vlq"]
+[ext_resource type="Script" uid="uid://chsgljjyqjm88" path="res://scripts/entities/player.gd" id="1_p0vlq"]
 [ext_resource type="Texture2D" uid="uid://dxi6jgg3l0dm6" path="res://assets/16x16 2D Platformer - Programmer Art/Animations/Player/Player - Climb.png" id="2_70d11"]
 [ext_resource type="Texture2D" uid="uid://bm8o8ofv6xhla" path="res://assets/16x16 2D Platformer - Programmer Art/Animations/Player/Player - Death.png" id="3_cw2d6"]
 [ext_resource type="Texture2D" uid="uid://bletmwgtw0dut" path="res://assets/16x16 2D Platformer - Programmer Art/Animations/Player/Player - Idle.png" id="4_khinc"]

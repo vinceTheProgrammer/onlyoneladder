@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://mkd0353rjue2"]
+[gd_scene load_steps=2 format=3 uid="uid://mkd0353rjue2"]
+
+[ext_resource type="Script" uid="uid://qgp6n1mouyx" path="res://scripts/ui/main_menu.gd" id="1_sl1te"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -7,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_sl1te")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -28,6 +31,7 @@ layout_mode = 2
 text = "Step Bros / Only One Ladder"
 
 [node name="Continue" type="Button" parent="CanvasLayer/VBoxContainer"]
+visible = false
 layout_mode = 2
 text = "Continue"
 
@@ -36,13 +40,17 @@ layout_mode = 2
 text = "New Game"
 
 [node name="LoadGame" type="Button" parent="CanvasLayer/VBoxContainer"]
+visible = false
 layout_mode = 2
 text = "Load Game"
 
 [node name="Settings" type="Button" parent="CanvasLayer/VBoxContainer"]
+visible = false
 layout_mode = 2
 text = "Settings"
 
 [node name="Quit" type="Button" parent="CanvasLayer/VBoxContainer"]
 layout_mode = 2
 text = "Quit"
+
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/NewGame" to="." method="_on_new_game_pressed"]

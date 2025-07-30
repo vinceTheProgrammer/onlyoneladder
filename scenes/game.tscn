@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://3udakjvttk3t"]
+
+[ext_resource type="Script" uid="uid://cxwkw0emem7f2" path="res://scripts/level_manager.gd" id="1_yqjtg"]
+[ext_resource type="Script" uid="uid://b23mb1vvf6xu4" path="res://scripts/player_manager.gd" id="2_lnu2h"]
+
+[node name="Game" type="Node2D"]
+
+[node name="LevelManager" type="Node" parent="."]
+script = ExtResource("1_yqjtg")
+
+[node name="PlayerManager" type="Node" parent="."]
+script = ExtResource("2_lnu2h")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="WorldRoot" type="Node2D" parent="."]
