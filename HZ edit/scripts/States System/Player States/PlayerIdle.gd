@@ -28,9 +28,11 @@ func State_Physics_Update(delta):
 	if Input.is_action_just_pressed("test keybind"):
 		Transitioned.emit(self, "Death")
 	
+	if Input.is_action_just_pressed(ThisPlayer.ability_action):
+		if ThisPlayer.target_ladder:
+			Transitioned.emit(self, "LadderMoving")
 	
 	if !ThisPlayer.is_on_floor():
 		Transitioned.emit(self, "Midair")
-	
 	
 	
