@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://cvg0ypp6wdsu8" path="res://assets/16x16 2D Platformer - Programmer Art/Tileset/16x16Tileset-resize.png" id="1_g44gb"]
 [ext_resource type="Texture2D" uid="uid://cdxxt2k32sqb" path="res://assets/16x16 2D Platformer - Programmer Art/Animations/Sawblades/Big Sawblades/Big Sawblades.png" id="2_741xk"]
-[ext_resource type="PackedScene" uid="uid://dfqsjoi7em1qf" path="res://scenes/entities/spawn_point.tscn" id="3_i0fhw"]
+[ext_resource type="PackedScene" uid="uid://dfqsjoi7em1qf" path="res://scenes/entities/player_spawn.tscn" id="3_i0fhw"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_feb5d"]
 texture = ExtResource("1_g44gb")

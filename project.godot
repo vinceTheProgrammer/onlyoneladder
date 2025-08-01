@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="OnlyOneLadder"
-run/main_scene="uid://mkd0353rjue2"
+run/main_scene="uid://du2pye3f8kkj2"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 

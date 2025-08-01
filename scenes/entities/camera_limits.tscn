@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://cb0e7m0s1b0vt"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_weruv"]
+resource_local_to_scene = true
+
+[node name="CameraLimits" type="Area2D"]
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_weruv")
+debug_color = Color(0.55372, 0.410005, 0.978304, 0.133333)
