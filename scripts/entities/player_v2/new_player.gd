@@ -10,9 +10,9 @@ class_name PlayerV2
 @export var player_id : int = 1
 @export var speed : int = 200
 @export var ladder_speed: float = 100.0
-@export var jump_force : int = 400
+@export var jump_force : int = 100
 @export var coyote_time : float = 0.2
-@export var gravity : int = 980
+@export var gravity : int = 1200
 @export var cursor_color : Color
 
 
@@ -30,10 +30,8 @@ class_name PlayerV2
 @onready var jump_action := "jump_player%d" % player_id
 @onready var ability_action := "grab_player%d" % player_id
 
-
 @onready var player_cursor: Polygon2D = $Cursor
 @onready var sm: Node = $StateMachine
-
 
 var target_ladder: Ladder
 

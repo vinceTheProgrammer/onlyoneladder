@@ -253,13 +253,15 @@ collision_layer = 2
 collision_mask = 9
 floor_constant_speed = true
 script = ExtResource("1_86exs")
-jump_force = 300
+ladder_speed = 250.0
+jump_force = 500
+gravity = 1500
 anims = NodePath("Anims")
 
 [node name="Anims" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -2)
 sprite_frames = SubResource("SpriteFrames_nmuyh")
-animation = &"Idle"
+animation = &"Death"
 
 [node name="PhysicsColl" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_ve1v3")
