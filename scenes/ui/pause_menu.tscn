@@ -63,7 +63,7 @@ grow_vertical = 2
 
 [node name="Resume" type="Button" parent="PanelContainer/Panel/VBoxContainer"]
 layout_mode = 2
-text = "resume"
+text = "Resume"
 
 [node name="Restart" type="Button" parent="PanelContainer/Panel/VBoxContainer"]
 layout_mode = 2

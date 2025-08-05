@@ -261,7 +261,7 @@ anims = NodePath("Anims")
 [node name="Anims" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -2)
 sprite_frames = SubResource("SpriteFrames_nmuyh")
-animation = &"Death"
+animation = &"Idle"
 
 [node name="PhysicsColl" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_ve1v3")

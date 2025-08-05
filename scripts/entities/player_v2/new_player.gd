@@ -11,6 +11,7 @@ class_name PlayerV2
 @export var speed : int = 200
 @export var ladder_speed: float = 100.0
 @export var jump_force : int = 100
+@export var mass : int = 100
 @export var coyote_time : float = 0.2
 @export var gravity : int = 1200
 @export var cursor_color : Color

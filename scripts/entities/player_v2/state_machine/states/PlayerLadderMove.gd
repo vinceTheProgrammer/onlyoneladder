@@ -20,9 +20,11 @@ func State_Enter():
 	init_ladder_climb()
 	
 func State_Update(delta):
-	if ladder_vertical_velocity > 0: ThisPlayer.anims.play_backwards()
-	elif ladder_vertical_velocity < 0: ThisPlayer.anims.play()
-	else: ThisPlayer.anims.pause()
+	
+	
+	if ladder_vertical_velocity < 0.0: ThisPlayer.anims.play()
+	
+	elif ladder_vertical_velocity > 0.0: ThisPlayer.anims.play_backwards()
 	
 	ThisPlayer.anims.rotation = ladder.rotation
 
@@ -45,6 +47,8 @@ func State_Physics_Update(delta):
 	var global_position_on_ladder: Vector2 = ladder.to_global(local_position_on_ladder)
 	ThisPlayer.global_position = global_position_on_ladder
 	
+	if !input_direction: ThisPlayer.anims.pause()
+	
 	if Input.is_action_just_pressed(ThisPlayer.jump_action):
 		deinit_ladder_climb()
 		ThisPlayer.velocity.y -= ThisPlayer.jump_force
@@ -64,11 +68,11 @@ func deinit_ladder_climb() -> void:
 	ThisPlayer.anims.rotation = 0.0
 
 func add_self_to_ladder_array(ladder: Ladder) -> void:
-	if not ladder.players_currently_climbing.has(self):
-		ladder.players_currently_climbing.append(self)
+	if not ladder.players_currently_climbing.has(ThisPlayer):
+		ladder.players_currently_climbing.append(ThisPlayer)
 		
 func remove_self_from_ladder_array(ladder: Ladder) -> void:
-	ladder.players_currently_climbing.erase(self)
+	ladder.players_currently_climbing.erase(ThisPlayer)
 	
 	
 	

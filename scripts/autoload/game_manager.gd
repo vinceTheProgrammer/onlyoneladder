@@ -17,7 +17,7 @@ func _ready():
 func load_gui():
 	if not gui_scene:
 		gui_scene = preload(GUI_SCENE_PATH).instantiate()
-		get_tree().get_root().add_child(gui_scene)
+		get_tree().get_root().add_child.call_deferred(gui_scene)
 		gui_scene.set_z_index(1000)
 
 
@@ -27,7 +27,7 @@ func change_scene(scene_path: String):
 		current_scene = null
 
 	var new_scene = load(scene_path).instantiate()
-	get_tree().get_root().add_child(new_scene)
+	get_tree().get_root().add_child.call_deferred(new_scene)
 	current_scene = new_scene
 
 

@@ -37,7 +37,8 @@ func State_Physics_Update(delta):
 		coyoteTime -= delta
 		
 		if Input.is_action_just_pressed(ThisPlayer.jump_action) and coyoteTime > 0:
-			ThisPlayer.velocity.y -= ThisPlayer.jump_force
+			ThisPlayer.velocity.y -= 250.0 #for some reason this doubles down with the midair state so I lowered it
+			print(ThisPlayer.velocity.y)
 			ThisPlayer.anims.play("Jump")
 			Transitioned.emit(self, "Midair")
 	

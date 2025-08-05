@@ -9,7 +9,7 @@ const END_Y_OFFSET = -63
 const LEFT_OFFSET = -7
 const RIGHT_OFFSET = -LEFT_OFFSET
 
-var players_currently_climbing: Array[Player] = []
+var players_currently_climbing: Array[PlayerV2] = []
 
 func _ready() -> void:
 	connect_ladder_signals_to_players()
@@ -27,7 +27,7 @@ func update_center_of_mass() -> void:
 	
 	for player in players_currently_climbing:
 		var local_pos = self.to_local(player.global_position)
-		var weight = player.MASS
+		var weight = player.mass
 		weighted_sum += local_pos * weight
 		total_weight += weight
 	

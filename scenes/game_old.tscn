@@ -34,8 +34,7 @@ position = Vector2(169, -18)
 [node name="Level1" parent="." instance=ExtResource("4_0tnpc")]
 
 [node name="Ladder" parent="." groups=["grabbable"] instance=ExtResource("5_vtaks")]
-position = Vector2(-248, -72)
-rotation = 0.637045
+position = Vector2(195, -37)
 
 [node name="RigidBody2D" type="RigidBody2D" parent="." groups=["grabbable"]]
 position = Vector2(-214, 15)
