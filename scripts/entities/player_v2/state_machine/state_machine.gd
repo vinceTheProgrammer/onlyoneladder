@@ -4,6 +4,7 @@ extends Node
 @export var init_state : State
 @export var playerx : PlayerV2
 
+var prev_state : State
 var current_state : State
 var states : Dictionary = {}
 
@@ -40,5 +41,7 @@ func on_child_transition(state, newstate):
 		current_state.State_Exit()
 	
 	new_state.State_Enter()
+	
+	prev_state = current_state
 	
 	current_state = new_state

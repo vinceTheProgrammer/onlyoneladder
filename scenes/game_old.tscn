@@ -37,7 +37,7 @@ position = Vector2(169, -18)
 position = Vector2(195, -37)
 
 [node name="RigidBody2D" type="RigidBody2D" parent="." groups=["grabbable"]]
-position = Vector2(-214, 15)
+position = Vector2(147, 12)
 collision_layer = 8
 collision_mask = 13
 
@@ -45,21 +45,26 @@ collision_mask = 13
 shape = SubResource("RectangleShape2D_feb5d")
 
 [node name="ColorRect" type="ColorRect" parent="RigidBody2D"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
 offset_left = -10.0
 offset_top = -10.0
 offset_right = 30.0
 offset_bottom = 30.0
-grow_horizontal = 2
-grow_vertical = 2
 scale = Vector2(0.5, 0.5)
 
 [node name="Saw" parent="." instance=ExtResource("6_kvpfn")]
 position = Vector2(234, -18)
+
+[node name="Saw2" parent="." instance=ExtResource("6_kvpfn")]
+position = Vector2(67, 157)
+
+[node name="Saw3" parent="." instance=ExtResource("6_kvpfn")]
+position = Vector2(22, 159)
+
+[node name="Saw4" parent="." instance=ExtResource("6_kvpfn")]
+position = Vector2(-23, 155)
+
+[node name="Saw5" parent="." instance=ExtResource("6_kvpfn")]
+position = Vector2(-68, 155)
 
 [connection signal="ladder_area_entered" from="Ladder" to="Players/Player" method="_on_ladder_ladder_area_entered"]
 [connection signal="ladder_area_entered" from="Ladder" to="Players/Player2" method="_on_ladder_ladder_area_entered"]

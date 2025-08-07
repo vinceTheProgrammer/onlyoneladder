@@ -23,7 +23,7 @@ func State_Physics_Update(delta):
 	if !dir:
 		Transitioned.emit(self, "Idle")
 	
-	if Input.is_action_just_pressed(ThisPlayer.jump_action):
+	if Input.is_action_just_pressed(ThisPlayer.jump_action) and ThisPlayer.is_on_floor():
 		ThisPlayer.velocity.y -= ThisPlayer.jump_force
 		ThisPlayer.anims.play("Jump")
 		Transitioned.emit(self, "Midair")
@@ -37,7 +37,7 @@ func State_Physics_Update(delta):
 		coyoteTime -= delta
 		
 		if Input.is_action_just_pressed(ThisPlayer.jump_action) and coyoteTime > 0:
-			ThisPlayer.velocity.y -= 250.0 #for some reason this doubles down with the midair state so I lowered it
+			ThisPlayer.velocity.y = -ThisPlayer.jump_force
 			print(ThisPlayer.velocity.y)
 			ThisPlayer.anims.play("Jump")
 			Transitioned.emit(self, "Midair")
