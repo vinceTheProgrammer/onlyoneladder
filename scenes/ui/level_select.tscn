@@ -34,7 +34,7 @@ grow_horizontal = 2
 scale = Vector2(1.31581, 1.31581)
 text = "Level Select"
 
-[node name="Button" type="Button" parent="."]
+[node name="Continue" type="Button" parent="."]
 layout_mode = 0
 offset_left = 456.0
 offset_top = 312.0
@@ -75,3 +75,6 @@ bbcode_enabled = true
 text = "[b]Level 1[/b]
 
 A very cool level."
+
+[connection signal="item_selected" from="ItemList" to="." method="_on_item_list_item_selected"]
+[connection signal="pressed" from="Continue" to="." method="confirm_level"]

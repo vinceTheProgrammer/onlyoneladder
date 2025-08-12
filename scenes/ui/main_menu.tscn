@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://qgp6n1mouyx" path="res://scripts/ui/main_menu.gd" id="1_sl1te"]
 
 [node name="MainMenu" type="Control"]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,8 +13,10 @@ grow_vertical = 2
 script = ExtResource("1_sl1te")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+visible = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
+visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5

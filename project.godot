@@ -18,8 +18,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 Globals="*res://scripts/autoload/globals.gd"
-GameManager="*res://scripts/autoload/game_manager.gd"
-LevelDatabase="*res://scripts/autoload/level_database.gd"
+GameManager="res://scripts/autoload/game_manager.gd"
+LevelDatabase="res://scripts/autoload/level_database.gd"
 
 [display]
 

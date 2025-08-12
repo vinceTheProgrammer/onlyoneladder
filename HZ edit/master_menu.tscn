@@ -1,0 +1,196 @@
+[gd_scene load_steps=6 format=3 uid="uid://cfxhsqgxspdgn"]
+
+[ext_resource type="Shader" uid="uid://drw8qdqj43hdt" path="res://HZ edit/shaders/bg.gdshader" id="1_t786x"]
+[ext_resource type="Script" uid="uid://31asxi2jllol" path="res://HZ edit/scripts/master_menu.gd" id="1_yf5d4"]
+[ext_resource type="PackedScene" uid="uid://b335hots3ndt5" path="res://scenes/ui/customization.tscn" id="3_2jknu"]
+[ext_resource type="PackedScene" uid="uid://dmb18n3vquccc" path="res://scenes/ui/level_select.tscn" id="4_gajsc"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yf5d4"]
+shader = ExtResource("1_t786x")
+shader_parameter/checker_size = 20.252
+shader_parameter/scroll_speed = Vector2(-0.13, 0.785)
+shader_parameter/base_color = Color(0.324906, 0.317389, 0.342238, 1)
+shader_parameter/hue_shift = 0.0
+shader_parameter/brightness = 1.0
+shader_parameter/contrast = 1.0
+
+[node name="Master Screen" type="Node2D"]
+script = ExtResource("1_yf5d4")
+metadata/_edit_horizontal_guides_ = [608.0]
+metadata/_edit_vertical_guides_ = [51.0]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = -10
+
+[node name="BG" type="ColorRect" parent="CanvasLayer"]
+z_index = -100
+material = SubResource("ShaderMaterial_yf5d4")
+offset_left = -283.0
+offset_top = -300.0
+offset_right = 1080.0
+offset_bottom = 1063.0
+mouse_filter = 2
+color = Color(0.849209, 0.249594, 0.288577, 1)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(373, 608)
+position_smoothing_enabled = true
+
+[node name="Main Menu" type="VBoxContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 238.0
+offset_top = 439.0
+offset_right = 520.0
+offset_bottom = 714.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 4
+
+[node name="Name" type="RichTextLabel" parent="Main Menu"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 36
+text = "StepBros/OnlyOneLadder"
+fit_content = true
+scroll_active = false
+horizontal_alignment = 1
+
+[node name="start" type="Button" parent="Main Menu"]
+layout_mode = 2
+text = "Start New Game"
+
+[node name="LevelSelect" type="Button" parent="Main Menu"]
+layout_mode = 2
+text = "Level Select"
+
+[node name="settings" type="Button" parent="Main Menu"]
+layout_mode = 2
+text = "Settings"
+
+[node name="start4" type="Button" parent="Main Menu"]
+layout_mode = 2
+text = "Achievements"
+
+[node name="Quit" type="Button" parent="Main Menu"]
+layout_mode = 2
+text = "Quit Game"
+
+[node name="MenuMark" type="Marker2D" parent="Main Menu"]
+position = Vector2(135, 170)
+
+[node name="Level Select" type="VBoxContainer" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -283.0
+offset_top = 519.0
+offset_right = -1.0
+offset_bottom = 639.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 4
+
+[node name="Name" type="RichTextLabel" parent="Level Select"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 36
+text = "Level Select"
+fit_content = true
+scroll_active = false
+horizontal_alignment = 1
+
+[node name="LevelSelect" type="Button" parent="Level Select"]
+layout_mode = 2
+text = "Level Select"
+
+[node name="LvlBack" type="Button" parent="Level Select"]
+layout_mode = 2
+text = "Back"
+
+[node name="LvlMenuMark" type="Marker2D" parent="Level Select"]
+position = Vector2(139, 89)
+
+[node name="Options" type="VBoxContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 822.0
+offset_top = 485.0
+offset_right = 1064.0
+offset_bottom = 710.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 4
+
+[node name="Name" type="RichTextLabel" parent="Options"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 36
+text = "Settings"
+fit_content = true
+scroll_active = false
+horizontal_alignment = 1
+
+[node name="start" type="Button" parent="Options"]
+layout_mode = 2
+text = "audio
+"
+
+[node name="start2" type="Button" parent="Options"]
+layout_mode = 2
+text = "controls"
+
+[node name="start3" type="Button" parent="Options"]
+layout_mode = 2
+text = "misc"
+
+[node name="start4" type="Button" parent="Options"]
+layout_mode = 2
+text = "About"
+
+[node name="OptionsBack" type="Button" parent="Options"]
+layout_mode = 2
+text = "Back"
+
+[node name="OptionsMark" type="Marker2D" parent="Options"]
+position = Vector2(122, 124)
+
+[node name="Customization" parent="." instance=ExtResource("3_2jknu")]
+offset_left = 68.0
+offset_top = -387.0
+offset_right = 705.0
+offset_bottom = -345.0
+
+[node name="CusMark" type="Marker2D" parent="Customization"]
+position = Vector2(318, 192)
+
+[node name="LevelSelect" parent="." instance=ExtResource("4_gajsc")]
+offset_left = -913.0
+offset_top = 400.0
+offset_right = -913.0
+offset_bottom = 400.0
+
+[node name="LvlSelectMark" type="Marker2D" parent="LevelSelect"]
+position = Vector2(325, 208)
+
+[node name="OptionsBack" type="Button" parent="LevelSelect"]
+layout_mode = 0
+offset_left = 456.0
+offset_top = 70.0
+offset_right = 624.0
+offset_bottom = 101.0
+text = "Back"
+
+[connection signal="pressed" from="Main Menu/start" to="." method="new_game"]
+[connection signal="pressed" from="Main Menu/LevelSelect" to="." method="_on_level_select_pressed"]
+[connection signal="pressed" from="Main Menu/settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="Main Menu/Quit" to="." method="_on_quit_pressed"]
+[connection signal="pressed" from="Level Select/LvlBack" to="." method="_on_lvl_back_pressed"]
+[connection signal="pressed" from="Options/OptionsBack" to="." method="_on_options_back_pressed"]
+[connection signal="pressed" from="LevelSelect/OptionsBack" to="." method="_on_options_back_pressed"]
