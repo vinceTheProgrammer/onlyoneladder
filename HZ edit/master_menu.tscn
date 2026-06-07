@@ -170,6 +170,14 @@ offset_bottom = -345.0
 [node name="CusMark" type="Marker2D" parent="Customization"]
 position = Vector2(318, 192)
 
+[node name="OptionsBack" type="Button" parent="Customization"]
+layout_mode = 0
+offset_left = 229.0
+offset_top = 335.0
+offset_right = 397.0
+offset_bottom = 366.0
+text = "Back"
+
 [node name="LevelSelect" parent="." instance=ExtResource("4_gajsc")]
 offset_left = -913.0
 offset_top = 400.0
@@ -193,4 +201,5 @@ text = "Back"
 [connection signal="pressed" from="Main Menu/Quit" to="." method="_on_quit_pressed"]
 [connection signal="pressed" from="Level Select/LvlBack" to="." method="_on_lvl_back_pressed"]
 [connection signal="pressed" from="Options/OptionsBack" to="." method="_on_options_back_pressed"]
+[connection signal="pressed" from="Customization/OptionsBack" to="." method="_on_options_back_pressed"]
 [connection signal="pressed" from="LevelSelect/OptionsBack" to="." method="_on_options_back_pressed"]
